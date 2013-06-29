@@ -1,0 +1,131 @@
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+
+using namespace std;
+
+struct ListNode {
+    int val;
+    ListNode* next;
+};
+
+void CreatList(ListNode** pHead, int val) {
+    if (pHead == NULL) {
+        puts("Invalid Input");
+        exit(1);
+    }
+    ListNode* pNew = new ListNode();
+    pNew->val = val;
+    pNew->next = NULL;
+
+    if (*pHead == NULL) {
+        *pHead = pNew;
+    } else {
+        ListNode* pNode = *pHead;
+        while (pNode->next != NULL) pNode = pNode->next;
+        pNode->next = pNew;
+    }
+}
+
+void PrintList(ListNode* pHead) {
+    if (pHead == NULL) {
+        puts("NULL");
+        return ;
+    }
+    ListNode* pNode = pHead;
+    bool first = true;
+    while (pNode != NULL) {
+        if (first) first = false;
+        else printf(" ");
+        printf("%d", pNode->val);
+        pNode = pNode->next;
+    }
+    printf("\n");
+}
+
+ListNode* MergeList(ListNode* pListOneHead, ListNode* pListTwoHead) {
+    if (pListOneHead == NULL && pListTwoHead == NULL) return NULL;
+    ListNode* pNodeOne = pListOneHead;
+    ListNode* pNodeTwo = pListTwoHead;
+    ListNode* pNodeNew = NULL;
+    ListNode* pMergeHead = NULL, *pNodeMerge = NULL;
+
+    while (pNodeOne != NULL && pNodeTwo != NULL) {
+        if (pNodeOne->val < pNodeTwo->val) {
+            pNodeNew = new ListNode();
+            pNodeNew->val = pNodeOne->val;
+            pNodeNew->next = NULL;
+            pNodeOne = pNodeOne->next;
+        } else {
+            pNodeNew = new ListNode();
+            pNodeNew->val = pNodeTwo->val;
+            pNodeNew->next = NULL;
+            pNodeTwo = pNodeTwo->next;
+        }
+        if (pMergeHead == NULL) {
+            pMergeHead = pNodeNew;
+            pNodeMerge = pMergeHead;
+        } else {
+            pNodeMerge->next = pNodeNew;
+            pNodeMerge = pNodeMerge->next;
+        }
+    }
+    while (pNodeOne != NULL) {
+        pNodeNew = new ListNode();
+        pNodeNew->val = pNodeOne->val;
+        pNodeNew->next = NULL;
+        if (pMergeHead == NULL) {
+            pMergeHead = pNodeNew;
+            pNodeMerge = pMergeHead;
+        } else {
+            pNodeMerge->next = pNodeNew;
+            pNodeMerge = pNodeMerge->next;
+        }
+        pNodeOne = pNodeOne->next;
+    }
+    while (pNodeTwo != NULL) {
+        pNodeNew = new ListNode();
+        pNodeNew->val = pNodeTwo->val;
+        pNodeNew->next = NULL;
+        if (pMergeHead == NULL) {
+            pMergeHead = pNodeNew;
+            pNodeMerge = pMergeHead;
+        } else {
+            pNodeMerge->next = pNodeNew;
+            pNodeMerge = pNodeMerge->next;
+        }
+        pNodeTwo = pNodeTwo->next;
+    }
+    return pMergeHead;
+}
+
+int main()
+{
+
+    /// freopen("in", "r", stdin);
+    int n = 0, m = 0, val = 0;
+    ListNode* ListOne = new ListNode();
+    ListNode* ListTwo = new ListNode();
+    ListNode** ListOneHead = &ListOne;
+    ListNode** ListTwoHead = &ListTwo;
+    *ListOneHead = NULL;
+    *ListTwoHead = NULL;
+
+    while (EOF != scanf("%d%d", &n, &m)) {
+        *ListOneHead = NULL;
+        *ListTwoHead = NULL;
+        for (int i = 0; i < n; i++) {
+            scanf("%d", &val);
+            CreatList(ListOneHead, val);
+        }
+        for (int i = 0; i < m; i++) {
+            scanf("%d", &val);
+            CreatList(ListTwoHead, val);
+        }
+        ListNode* ans = MergeList(*ListOneHead, *ListTwoHead);
+        PrintList(ans);
+    }
+    return 0;
+}
+
